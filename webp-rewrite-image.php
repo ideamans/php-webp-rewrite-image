@@ -244,7 +244,13 @@ class Server {
 
   public function canditate()
   {
-    $path = ImageFile::joinPath($this->server('DOCUMENT_ROOT'), $this->server('REDIRECT_URL'));
+    // Security check
+    $redirect_url = $this->server('REDIRECT_URL');
+    $redirect_url = preg_replace('/\?.*$/', '', $redirect_url); // Remove query string
+    if (!preg_match('/\.(jpe?g|png|gif)$/i', $redirect_url)) return; // return; // Only image files
+    if (strpos($redirect_url, '..') !== false) return; // Disallow going up
+
+    $path = ImageFile::joinPath($this->server('DOCUMENT_ROOT'), $redirect_url);
     if ($this->webpAcceptable()) {
       $this->appendFile(new ImageFile($path . '.webp'));
     }
@@ -336,7 +342,7 @@ class Server {
     }
   
     if ($this->server('REQUEST_METHOD', 'GET') !== 'HEAD') {
-      echo $res->bodyContent();
+      echo $content;
     }
   }
 }
