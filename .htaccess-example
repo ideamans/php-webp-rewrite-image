@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule .(jpe?g|png|gif)$ /path/to/webp-rewrite-image.php [NC]
