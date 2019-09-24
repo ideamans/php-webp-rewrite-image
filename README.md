@@ -80,7 +80,7 @@ class Config
 
 簡単なスクリプトを作成して(`benchmark/run.sh`)、計測した一例です。
 
-体感速度に差がでるほどの遅延は
+体感速度に差がでるほどの遅延ではないと言えます。
 
 * MacBook Pro 15
 * Intel core i7 3.1GHz 4コア
