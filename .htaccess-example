@@ -1,2 +1,13 @@
+# TODO /PATH/TO/の箇所を実際の配置パスに書き換えてください。
 RewriteEngine On
-RewriteRule .(jpe?g|png|gif)$ /path/to/webp-rewrite-image.php [NC]
+RewriteRule .(jpe?g|png|gif)$ /PATH/TO/webp-rewrite-image.php [NC]
+
+# PHPの出力バッファを無効
+php_flag "output_buffering" Off
+
+# .webp拡張子はMIMEタイプimage/webpで配信
+AddType image/webp .webp
+
+# CDN向けにVary: Acceptヘッダを付与
+SetEnvIf Request_URI "\.(jpe?g|png|gif)$" _image_request
+Header append Vary Accept env=_image_request
