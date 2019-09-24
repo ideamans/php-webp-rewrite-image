@@ -77,6 +77,41 @@ class ServerTest extends TestCase
     $this->assertEquals($paths, array(
       '/var/www/html/path/to/image.jpg',
     ));
+
+    $withqs = new Server(array(
+      'HTTP_ACCEPT' => '*/*',
+      'DOCUMENT_ROOT' => '/var/www/html',
+      'REDIRECT_URL' => '/path/to/image.jpg?name=value',
+    ));
+    $withqs->canditate();
+
+    $paths = array_map(function($file) {
+      return $file->path();
+    }, $withqs->files());
+    $this->assertEquals($paths, array(
+      '/var/www/html/path/to/image.jpg',
+    ));
+  }
+
+  public function testSecureCanditate()
+  {
+    $goup = new Server(array(
+      'HTTP_ACCEPT' => '*/*; image/webp',
+      'DOCUMENT_ROOT' => '/var/www/html',
+      'REDIRECT_URL' => '/path/../image.jpg',
+    ));
+    $goup->canditate();
+
+    $this->assertTrue($goup->filesEmpty());
+
+    $notimage = new Server(array(
+      'HTTP_ACCEPT' => '*/*; image/webp',
+      'DOCUMENT_ROOT' => '/var/www/html',
+      'REDIRECT_URL' => '/path/id_rsa',
+    ));
+    $notimage->canditate();
+
+    $this->assertTrue($notimage->filesEmpty());
   }
 
   public function testFilterExists()

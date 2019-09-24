@@ -111,6 +111,19 @@ class ImageFile
 
     return $this->_mime;
   }
+
+  public function secureContent()
+  {
+    $content = file_get_contents($this->path());
+
+    // Return only if assumed image data.
+    if (substr($content, 0, 4) === "RIFF" && substr($content, 8, 4) === "WEBP") return $content;
+    if (substr($content, 0, 2) === "\xFF\xD8") return $content;
+    if (substr($content, 0, 4) === "\x89PNG") return $content;
+    if (substr($content, 0, 3) === "GIF") return $content;
+
+    return '';
+  }
 }
 
 class Response
@@ -182,7 +195,7 @@ class Response
   {
     if ($this->body() === null) return;
     if (is_string($this->body())) return $this->body();
-    return file_get_contents($this->body()->path());
+    return $this->body()->secureContent();
   }
 }
 

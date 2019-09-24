@@ -92,4 +92,22 @@ class FileTest extends TestCase
     $gif = new ImageFile('/path/to/image.GIF');
     $this->assertEquals($gif->mime(), 'image/gif');
   }
+
+  public function testSecureContent()
+  {
+    $webp = new ImageFile(__DIR__ . '/../webp-newer/sample.png.webp');
+    $this->assertNotEquals($webp->secureContent(), '');
+
+    $png = new ImageFile(__DIR__ . '/../webp-newer/sample.png');
+    $this->assertNotEquals($png->secureContent(), '');
+
+    $jpg = new ImageFile(__DIR__ . '/files/lenna.jpg');
+    $this->assertNotEquals($jpg->secureContent(), '');
+
+    $gif = new ImageFile(__DIR__ . '/files/earth.gif');
+    $this->assertNotEquals($gif->secureContent(), '');
+
+    $txt = new ImageFile(__DIR__ . '/files/dummy.txt');
+    $this->assertEquals($txt->secureContent(), '');
+  }
 }
